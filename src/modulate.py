@@ -44,7 +44,7 @@ class SimulationParams:
     quant_bits: int | None = None
 
     # ----------- Randomness ----------- #
-    seed: int = 12345
+    seed: int = 34211
 
 def generate_bit_stream(num_bits, rng):
     # Generate binary bit stream (0 or 1)
@@ -287,7 +287,7 @@ def generate_test_signal(params):
     # -----------------------------
     # AWGN
     # -----------------------------
-
+    nf_signal = signal # noise free signal
     signal = add_awgn(
         signal,
         params.EbN0_dB,
@@ -315,6 +315,7 @@ def generate_test_signal(params):
         "bits": bits,
         "symbols": symbols,
         "signal": signal,
+        "noise-free signal": nf_signal,
         "I": I,
         "Q": Q,
     }

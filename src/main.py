@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import modulate, demodulate
 
 params = modulate.SimulationParams(
-    num_bits=10000,
-    samples_per_symbol=1,
+    num_bits=10,
+    samples_per_symbol=8,
     modulation="MSK",
     EbN0_dB=15,
     freq_offset=0.05,
@@ -40,27 +40,20 @@ def measure_ebn0(signal, noisy_signal, samples_per_symbol):
 
     return 10 * np.log10(measured_EbN0)
 
-noisy = modulate.add_awgn(
-    tx["signal"],
-    6,
-    params.samples_per_symbol,
-    np.random.default_rng(params.seed)
-)
-
 print(
     measure_ebn0(
+        tx["noise-free signal"],
         tx["signal"],
-        noisy,
         params.samples_per_symbol
     )
 )
 
-# print(detected_bits)
-# print(transmitted_bits)
+print(detected_bits)
+print(transmitted_bits)
 
-# BER = np.mean(transmitted_bits != detected_bits)
+BER = np.mean(transmitted_bits != detected_bits)
 
-# print(BER)
+print(BER)
 
 # plt.figure()
 
