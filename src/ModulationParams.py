@@ -3,8 +3,8 @@ from dataclasses import dataclass
 """
 Since MSK is a type of FSK, the amplitude is always between
 1 and -1. For convenience, let modulator output be n-bit integer
-code representing some value between -1 to 1. Since one code must
-represent 0, each LSB represents (1 - (-1))/(2^n - 1) = 2/(2^n - 1)
+code representing some value between -1 to 1. Since there must be a
+code for both endpoints, each LSB represents (1 - (-1))/(2^n - 1) = 2/(2^n - 1)
 so for integer code x, the corresponding value in decimal is 
 y(x) = -1 + x * 2 / (2^n - 1)
 
@@ -51,8 +51,8 @@ class ModulationParams:
     # Bit widths
     n: int = 6
     k: int = 8
-    j: int = 0
-    m: int = 8
+    j: int = 2
+    m: int = 4
 
     # Signal
     num_bits: int = 1000
