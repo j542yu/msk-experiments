@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+from dataclasses import replace
 
 import lut_logic
 from ModulationParams import ModulationParams
-from modulate_if import modulate_msk
+from modulate_if import modulate_msk, generate_symbols
 
 # Visualize effect of bit width choices on cos wave in LUT
 def plot_quantized_cosines(n_values, k_values):
@@ -62,16 +63,18 @@ def plot_quantized_cosines(n_values, k_values):
 
 # Visualize modulation result
 def plot_msk_if(params, num_symbols_to_plot=12):
-    symbols, phase_stream, output = modulate_msk(params)
+    symbols = generate_symbols(params.num_bits, params.seed)
+    _, _, output = modulate_msk(symbols, params)
 
     # Normalize unsigned DAC codes to [-1, 1] for easier
     # comparison when varying params but not needed in actual HW
-    waveform = np.asarray(lut_logic.decode_lut(output, params.n))
+    # waveform = np.asarray(lut_logic.decode_lut(output, params.n))
+    waveform = output
 
     # Time associated with each output sample
-    time = np.arange(len(waveform)) / params.f_s
+    time = np.arange(len(output)) / params.f_s
 
-    # Only plot the first few symbols so the oscillations are visible.
+    # Only plot the first few symbols so the oscillations are visible
     num_samples = min(
         num_symbols_to_plot * params.m,
         len(waveform)
@@ -81,13 +84,13 @@ def plot_msk_if(params, num_symbols_to_plot=12):
         2, 1, figsize=(12, 7), sharex=True
     )
 
-    # Plot the quantized IF waveform.
+    # Plot the quantized IF waveform
     ax1.step(time[:num_samples] * 1e6, waveform[:num_samples])
-    ax1.set_ylabel("Normalized amplitude")
+    ax1.set_ylabel("Modulator Output (Not Normalized)")
     ax1.set_title("MSK IF Output")
     ax1.grid(True, alpha=0.3)
 
-    # Show the input bits as a step waveform.
+    # Show the input bits as a step waveform
     bit_times = np.arange(
         num_symbols_to_plot + 1
     ) * params.m / params.f_s * 1e6
@@ -108,8 +111,6 @@ def plot_msk_if(params, num_symbols_to_plot=12):
     fig.tight_layout()
     plt.show()
 
-    return symbols, waveform, phase_stream
-
 def make_legend_interactive(fig, ax):
     legend = ax.get_legend()
     if legend is None:
@@ -120,7 +121,7 @@ def make_legend_interactive(fig, ax):
     plotted_lines = ax.get_lines()
 
     # First plotted line is the ideal cosine
-    for legend_line, plotted_line in zip(legend_lines, plotted_lines):
+    for legend_line, _ in zip(legend_lines, plotted_lines):
         legend_line.set_picker(True)
         legend_line.set_pickradius(5)
 

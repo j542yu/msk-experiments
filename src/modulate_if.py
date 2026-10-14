@@ -23,7 +23,7 @@ def sample_to_phase(sample, params):
     else:
         raise ValueError("Bit stream has values other than 0 or 1")
 
-    # Add both because there is some constant phase incremnt from
+    # Add both because there is some constant phase increment from
     # the IF frequency (not baseband)
     total_increment_rad = if_increment_rad + data_increment_rad
 
@@ -51,8 +51,7 @@ def phase_accumulator(symbol_samples, params):
 
     return phase_stream
     
-def modulate_msk(params):
-    symbols = generate_symbols(params.num_bits, params.seed)
+def modulate_msk(symbols, params):
     symbol_samples = np.repeat(symbols, params.m)
 
     # Need someway to model doing arithmetic in k + j bits
