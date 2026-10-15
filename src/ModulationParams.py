@@ -50,10 +50,10 @@ Made with https://asciiflow.com/#/
 @dataclass
 class ModulationParams:
     # Bit widths
-    n: int = 6
+    n: int = 8
     k: int = 8
-    j: int = 2
-    m: int = 4
+    j: int = 0
+    m: int = 8
 
     # Signal
     num_bits: int = 1000
