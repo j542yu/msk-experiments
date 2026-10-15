@@ -36,13 +36,14 @@ Summary:
 * truncate (k+j) bits to k-bit address for LUT
 * n-bit LUT output, n-bit DAC input
   (DAC architecture TBD - R-2R or current-steering?)
-                                   ┌────────/────────┐                                           
-                                   │       k+j       │                                           
- m samples/  ┌────────────┐        │  ┌───────────┐  │                                           
-  symbol     │ 0 -> -pi/2 │        ▼  │phase      │  │            ┌───────────┐        ┌────────┐
-─────/──────►│ 1 -> pi/2  ├─────/────►│accumulator┼─►┴──────/────►│ cos LUT   ├──/────►│  DAC   │
-     1       └────────────┘    k+j    └───────────┘         k     └───────────┘  n     └────────┘
+                                           ┌────────/────────┐                                           
+                                           │       k+j       │                                           
+ m samples/  ┌────────────────────┐        │  ┌───────────┐  │                                           
+  symbol     │ 0 -> phi_if - pi/2 │        ▼  │phase      │  │            ┌───────────┐        ┌────────┐
+─────/──────►│ 1 -> phi_if + pi/2 ├─────/────►│accumulator┼─►┴──────/────►│ cos LUT   ├──/────►│  DAC   │
+     1       └────────────────────┘    k+j    └───────────┘         k     └───────────┘  n     └────────┘
 
+(phi_if is the constant phase increase from IF)
 Made with https://asciiflow.com/#/     
 """
 
@@ -66,7 +67,7 @@ class ModulationParams:
 
     For MSK, the two frequencies are
     f_0 = f_if - 1/(4 * T) = f_if - f_s/(4 * m)
-    f_1 = f_if + f_if/(4 * m)
+    f_1 = f_if + f_s/(4 * m)
     (where period T = m/f_s since m samples per symbol)
 
     Since f_0, f_1 must be positive and because of Nyquist theorem,
@@ -81,6 +82,7 @@ class ModulationParams:
     31.25kHz < f_if < 468.75 kHz
 
     https://en.wikipedia.org/wiki/Intermediate_frequency
-    Apparently 455kHz is one of common IFs for FM?
+    Since a higher IF means less samples per carrier cycle, that makes the
+    output waveform more distorted. Thus, pick something low.
     """
-    f_if: int = 450_000 # Hz
+    f_if: int = 40_000 # Hz
