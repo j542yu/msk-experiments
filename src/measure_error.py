@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def calculate_snr(reference, measured):
     """
     Calculate signal-to-error ratio between two waveforms.
@@ -48,7 +47,6 @@ def calculate_snr(reference, measured):
         "snr_db": snr_db,
     }
 
-
 def ideal_msk_waveform_oversampled(symbols, params, oversample=16):
     """
     Generate an ideal MSK waveform at a higher time resolution.
@@ -89,7 +87,6 @@ def ideal_msk_waveform_oversampled(symbols, params, oversample=16):
 
     return np.cos(phase)
 
-
 def dac_zero_order_hold(samples, oversample=16):
     """
     Model a zero-order-hold DAC.
@@ -107,7 +104,6 @@ def dac_zero_order_hold(samples, oversample=16):
     samples = np.asarray(samples, dtype=float)
 
     return np.repeat(samples, oversample)
-
 
 def measure_dac_snr(symbols, params, dac_codes, oversample=16):
     """
